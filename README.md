@@ -1,6 +1,6 @@
-# 🚀 Neo Framework (`@junnyontop-pixel/neo-app`)
+# 🚀 Neo Framework v2 (`@junnyontop-pixel/neo-app`)
 
-**Neo Framework**는 `.neo` 파일을 직관적인 자바스크립트 코드로 컴파일하여 상태 기반 UI를 구현하는 초경량 커스텀 프레임워크입니다. 
+**Neo Framework v2**는 `.neo` 파일을 직관적인 자바스크립트 코드로 컴파일하여 상태 기반 UI를 구현하는 초경량 커스텀 프레임워크입니다. 
 
 ---
 
