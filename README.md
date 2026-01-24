@@ -118,12 +118,10 @@ v2에서는 이벤트 선언 시 `@` 대신 `on:` 키워드를 사용하여 태�
 ```text
 project-root/
 ├── node_modules/
-├── src/
-│   ├── App.neo      <-- Neo 소스 코드 작성
-│   ├── NeoParser.js <-- 문자열 분석 로직
-│   ├── NeoCore.js   <-- 생성 및 리턴 로직
-│   └── main.js      <-- 모든 데이터를 연결하는 중계자
-├── index.html       <-- <div id="app"></div> 포함
+├── src/           <-- 건들이지 말고 명령어사용
+│   ├── App.neo     
+│   └── App.js
+├── index.html
 └── vite.config.js
 ```
 
