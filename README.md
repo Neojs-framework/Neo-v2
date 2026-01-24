@@ -37,7 +37,7 @@ export default defineConfig({
         if (file.endsWith('.neo')) {
           try {
             // 파일 저장 시 자동으로 컴파일러 실행
-            execSync(`node node_modules/@junnyontop-pixel/neo-app/compiler/index.js ${file}`, { stdio: 'inherit' });
+            execSync(`node node_modules/@junnyontop-pixel/neo-app/compiler/main.js ${file}`, { stdio: 'inherit' });
             // 브라우저 새로고침 신호 전송
             server.ws.send({ type: 'full-reload' });
           } catch (e) {
