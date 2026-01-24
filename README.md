@@ -70,11 +70,13 @@ npx neoc src/App.neo
 
 v2에서는 이벤트 선언 시 `@` 대신 `on:` 키워드를 사용하여 태그 선언과 이벤트를 명확히 구분합니다.
 
-### 1. 로직 정의 (@Script)
+### 1. 로직 정의 (#Script)
 데이터 상태와 함수를 정의합니다.
 
+> 더 직관적인 코드를 위해 키워드를 `#`로 변경하였습니다.
+
 ```neo
-@Script {
+#Script {
     let count = 0;
     const add = () => count++;
 }
