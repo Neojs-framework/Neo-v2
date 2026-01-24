@@ -1,0 +1,7 @@
+#Script {
+    let title = "hello, Neo!"
+}
+
+@ShopTitle:h1 [text-2xl, font-bold] {
+    innerHTML: $title
+}
