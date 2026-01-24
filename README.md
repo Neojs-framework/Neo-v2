@@ -17,14 +17,52 @@ npm install @junnyontop-pixel/neo-app@2.0.0
 
 ---
 
-## ⚡️ Quick Start
+## ⚡️ Quick Start with Vite (Vite 사용 권장)
 
-Neo v2는 **Main.js**가 모든 데이터를 관리하고 전달하는 '중계자' 역할을 수행합니다.
+**Neo Framework는 실시간 컴파일과 빠른 피드백(HMR)을 위해 Vite 환경에서의 사용을 강력히 권장합니다.**
 
-1. **Main (중계자)**: `.neo` 파일을 읽어 전체 흐름을 제어합니다.
-2. **NeoParser (분석가)**: 문자열을 쪼개어 태그, 스타일, 이벤트 객체로 변환합니다.
-3. **NeoCore (생성자)**: 변환된 객체를 바탕으로 실제 DOM 요소를 생성하여 **리턴**합니다.
-4. **Render**: 리턴받은 요소를 `index.html`의 `#app`에 최종 삽입합니다.
+1. `vite.config.js` 설정
+
+파일 저장 시 자동으로 `.neo` 파일을 `.js`로 컴파일하도록 아래 플러그인 설정을 추가하세요.
+
+``` js
+import { defineConfig } from 'vite';
+import { execSync } from 'child_process';
+
+export default defineConfig({
+  plugins: [
+    {
+      name: 'neo-compiler',
+      handleHotUpdate({ file, server }) {
+        if (file.endsWith('.neo')) {
+          try {
+            // 파일 저장 시 자동으로 컴파일러 실행
+            execSync(`node node_modules/@junnyontop-pixel/neo-app/compiler/index.js ${file}`, { stdio: 'inherit' });
+            // 브라우저 새로고침 신호 전송
+            server.ws.send({ type: 'full-reload' });
+          } catch (e) {
+            console.error('⚠️ Neo 컴파일 에러:', e.message);
+          }
+        }
+      }
+    }
+  ]
+});
+```
+
+2. 추가 설정
+
+```bash
+npx neoc-init
+```
+명령어를 사용하여 프로젝트를 초기화하세요.
+
+프로젝트 루트에 생긴 src폴더 안의 App.neo파일을 수정하고
+
+```bash
+npx neoc src/App.neo
+```
+명령어를 사용해 컴파일하세요.
 
 ---
 
