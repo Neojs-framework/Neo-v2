@@ -117,8 +117,8 @@ v2에서는 이벤트 선언 시 `@` 대신 `on:` 키워드를 사용하여 태�
 
 ```text
 project-root/
-├── node_modules/
-├── src/           <-- 건들이지 말고 명령어사용
+├── node_modules/  <-- 건들이지 말고 명령어사용
+├── src/           
 │   ├── App.neo     
 │   └── App.js
 ├── index.html
