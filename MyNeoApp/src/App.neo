@@ -1,0 +1,4 @@
+@Btn:button [px-4, py-2, bg-black, text-white, rounded] {
+  innerHTML: "현재 숫자: $Store.count"
+  on:click: Store.add()
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@junnyontop-pixel/neo-app",
+  "version": "2.1.0",
+  "description": "나만의 커스텀 프레임워크 Neo",
+  "main": "core/NeoCore.js",
+  "type": "module",
+  "files": [
+    "compiler",
+    "core",
+    "index.html",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node compiler/index.js src/App.neo",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "framework",
+    "neo",
+    "dsl"
+  ],
+  "author": "junnyontop-pixel",
+  "license": "MIT"
+}
