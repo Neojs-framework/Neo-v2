@@ -64,13 +64,14 @@ Neo는 JavaScript 로직을 해석하거나 제한하지 않습니다.
 #### `src/state.js`
 
 ```js
+const add = () => {
+  Store.count++;
+};
+
 export const Store = {
   count: 0,
 
-  add() {
-    this.count++;
-    __neoRender();
-  }
+  add
 };
 ```
 
