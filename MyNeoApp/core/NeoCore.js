@@ -7,8 +7,19 @@ export class NeoCore {
       el.className = data.styles.join(' ');
     }
 
-    el.innerHTML = NeoCore.renderTemplate(data.innerHTML);
+    // 1️⃣ 텍스트 먼저
+    if (data.innerHTML) {
+      el.innerHTML = NeoCore.renderTemplate(data.innerHTML);
+    }
 
+    // 2️⃣ ⭐ 자식 태그 렌더링 (이게 핵심)
+    if (Array.isArray(data.children)) {
+      data.children.forEach(child => {
+        const childEl = NeoCore.create(child);
+        el.appendChild(childEl);
+      });
+    }
+    
     (data.events || []).forEach(evt => {
       el.addEventListener(evt.type, () => {
         try {

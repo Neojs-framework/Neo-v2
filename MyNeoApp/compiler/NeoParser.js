@@ -5,7 +5,8 @@ export class NeoParser {
       tag: "",
       styles: [],
       innerHTML: "",
-      events: []
+      events: [],
+      children: []
     };
 
     // @ID:Tag
@@ -27,7 +28,19 @@ export class NeoParser {
     // { content }
     const contentMatch = rawCode.match(/\{([\s\S]*?)\}$/);
     if (contentMatch) {
-      const lines = contentMatch[1].trim().split('\n');
+      let content = contentMatch[1].trim(); // ⭐ 이게 content
+      let rest = content;                   // ⭐ 여기서 rest 생성
+
+      while (rest.includes('@')) {
+        const start = rest.indexOf('@');
+        const { block, nextIndex } = extractTag(rest, start);
+
+        result.children.push(this.parse(block));
+
+        rest = rest.slice(0, start) + rest.slice(nextIndex);
+      }
+
+      const lines = rest.split('\n');
 
       lines.forEach(line => {
         const text = line.trim();
@@ -55,4 +68,29 @@ export class NeoParser {
 
     return result;
   }
+}
+
+function extractTag(code, startIndex) {
+  let i = startIndex;
+  let depth = 0;
+  let opened = false;
+
+  while (i < code.length) {
+    if (code[i] === '{') {
+      depth++;
+      opened = true;
+    } else if (code[i] === '}') {
+      depth--;
+      if (opened && depth === 0) {
+        i++; // 닫는 } 포함
+        break;
+      }
+    }
+    i++;
+  }
+
+  return {
+    block: code.slice(startIndex, i).trim(),
+    nextIndex: i
+  };
 }
