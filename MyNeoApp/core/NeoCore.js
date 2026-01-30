@@ -7,6 +7,32 @@ export class NeoCore {
       el.className = data.styles.join(' ');
     }
 
+    if (data.attrs && typeof data.attrs === 'object') {
+      for (const [key, value] of Object.entries(data.attrs)) {
+
+        // boolean attr
+        if (typeof value === 'boolean') {
+          el[key] = value;
+          continue;
+        }
+
+        // input 관련 핵심 property
+        if (
+          el instanceof HTMLInputElement ||
+          el instanceof HTMLTextAreaElement ||
+          el instanceof HTMLSelectElement
+        ) {
+          if (key in el) {
+            el[key] = value;
+            continue;
+          }
+        }
+
+        // fallback: 일반 attribute
+        el.setAttribute(key, String(value));
+      }
+    }
+
     // 1️⃣ 텍스트 먼저
     if (data.innerHTML) {
       el.innerHTML = NeoCore.renderTemplate(data.innerHTML);

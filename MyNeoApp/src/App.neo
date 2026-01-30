@@ -23,6 +23,12 @@
       innerHTML: "Increase"
       on:click: Store.add()
     }
-  }
 
+    @input:input [hello] {
+      ::attrs: {
+        type: "text",
+        placeholder: "Neo"
+      }
+    }
+  }
 }
