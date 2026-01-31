@@ -122,7 +122,7 @@ Neo는 UI 선언만 담당합니다.
 | `$Store.xxx` | 전역 상태 바인딩 | `$Store.count` |
 | `attrs {...}` | html 속성 추가 | `attrs {
 type: "text",
-placeholder: "Neo"|
+placeholder: "Neo"`|
 
 ---
 
