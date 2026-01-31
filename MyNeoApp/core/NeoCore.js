@@ -8,15 +8,18 @@ export class NeoCore {
     }
 
     if (data.attrs && typeof data.attrs === 'object') {
-      for (const [key, value] of Object.entries(data.attrs)) {
+      for (const [key, rawValue] of Object.entries(data.attrs)) {
 
-        // boolean attr
-        if (typeof value === 'boolean') {
-          el[key] = value;
+        // ⭐ 핵심: 먼저 렌더링
+        const value = NeoCore.renderTemplate(String(rawValue));
+
+        // boolean attribute
+        if (value === 'true' || value === 'false') {
+          el[key] = value === 'true';
           continue;
         }
 
-        // input 관련 핵심 property
+        // input / textarea / select property
         if (
           el instanceof HTMLInputElement ||
           el instanceof HTMLTextAreaElement ||
@@ -28,8 +31,8 @@ export class NeoCore {
           }
         }
 
-        // fallback: 일반 attribute
-        el.setAttribute(key, String(value));
+        // fallback attribute
+        el.setAttribute(key, value);
       }
     }
 

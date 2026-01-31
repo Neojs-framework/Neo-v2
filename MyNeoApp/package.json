@@ -1,6 +1,6 @@
 {
   "name": "@junnyontop-pixel/neo-app",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "나만의 커스텀 프레임워크 Neo",
   "main": "core/NeoCore.js",
   "type": "module",

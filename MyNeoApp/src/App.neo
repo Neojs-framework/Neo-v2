@@ -27,7 +27,7 @@
     @input:input [hello] {
       ::attrs: {
         type: "text",
-        placeholder: "Neo"
+        placeholder: $Store.count
       }
     }
   }
