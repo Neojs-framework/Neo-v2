@@ -19,7 +19,7 @@ UI와 JavaScript 로직을 명확히 분리하는 구조로
 ## 🛠 Installation (설치)
 
 ```bash
-npm install @junnyontop-pixel/neo-app@2.2.0
+npm install @junnyontop-pixel/neo-app@2.3.0
 ```
 
 ---
