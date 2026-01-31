@@ -110,7 +110,7 @@ Neo는 UI 선언만 담당합니다.
 | **`[...]`** | Tailwind 스타일 리스트 | `[p-4, bg-white]` |
 | **`innerHTML`** | 텍스트/HTML 내용 및 상태 바인딩 | `"Hello $Store.user"` |
 | **`on:event`** | 이벤트 핸들러 바인딩 | `on:click: Store.add()` |
-| **`attrs {...}`** | HTML 표준 속성 추가 | `attrs { type: "text" }` |
+| **`::attrs {...}`** | HTML 표준 속성 추가 | `::attrs { type: "text" }` |
 
 ---
 
