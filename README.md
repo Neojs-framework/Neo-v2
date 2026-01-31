@@ -120,6 +120,9 @@ Neo는 UI 선언만 담당합니다.
 | `innerHTML` | 텍스트/HTML 내용 | `"Hello"` |
 | `on:event` | 이벤트 핸들러 | `on:click: Store.add()` |
 | `$Store.xxx` | 전역 상태 바인딩 | `$Store.count` |
+| `attrs {...}` | html 속성 추가 | `attrs {
+type: "text",
+placeholder: "Neo"|
 
 ---
 
