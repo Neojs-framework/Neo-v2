@@ -1,6 +1,6 @@
 {
   "name": "@junnyontop-pixel/neo-app",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "나만의 커스텀 프레임워크 Neo",
   "main": "core/NeoCore.js",
   "type": "module",
@@ -13,7 +13,9 @@
   ],
   "scripts": {
     "build": "node compiler/index.js src/App.neo",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "start": "index.html"
   },
   "keywords": [
     "framework",
