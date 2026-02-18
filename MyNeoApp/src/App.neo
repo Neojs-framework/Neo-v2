@@ -30,7 +30,7 @@
         placeholder: $Store.count
       }
     }
-    ::if($Store.state){
+    ::if($Store.count > 14){
       @if_content:div[if_content]{
         innerHTML: "NeoNeo"
       }

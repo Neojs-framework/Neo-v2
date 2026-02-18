@@ -46,10 +46,12 @@ export class NeoParser {
         result.children.push({
           type: "ifBlock",
           condition: condition,
-          children: dummyParsed.children
+          children: dummyParsed.children,
+          _pos: start
         });
 
-        rest = rest.slice(0, start) + rest.slice(nextIndex);
+        // rest = rest.slice(0, start) + rest.slice(nextIndex);
+        rest = rest.slice(0, start) + " ".repeat(nextIndex - start) + rest.slice(nextIndex);
       }
 
       // ✅ 1) children 태그들 파싱
@@ -57,9 +59,13 @@ export class NeoParser {
         const start = rest.indexOf('@');
         const { block, nextIndex } = extractTag(rest, start);
 
-        result.children.push(this.parse(block));
+        const childNode = this.parse(block);
+        childNode._pos = start;
 
-        rest = rest.slice(0, start) + rest.slice(nextIndex);
+        result.children.push(childNode);
+
+        // rest = rest.slice(0, start) + rest.slice(nextIndex);
+        rest = rest.slice(0, start) + " ".repeat(nextIndex - start) + rest.slice(nextIndex);
       }
 
       // ✅ 2) ::attrs 메타 블록 파싱
@@ -69,8 +75,10 @@ export class NeoParser {
 
         result.attrs = parseAttrs(block);
 
-        rest = rest.slice(0, start) + rest.slice(nextIndex);
+        rest = rest.slice(0, start) + " ".repeat(nextIndex - start) + rest.slice(nextIndex);
       }
+
+      result.children.sort((a, b) => a._pos - b._pos);
 
       // // ✅ 3) ::if 조건 렌더링 파싱        // 순서 옮기기
       // while (rest.includes('::if')) {

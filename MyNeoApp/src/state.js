@@ -1,9 +1,9 @@
+let count = 0;
+
 export const Store = {
-  count: 0,
+  count,
 
   add() {
     Store.count++;
-  },
-
-  state: false
+  }
 };
