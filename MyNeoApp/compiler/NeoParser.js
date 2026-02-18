@@ -34,18 +34,23 @@ export class NeoParser {
     if (contentMatch) {
       let rest = contentMatch[1].trim();
 
-      // // ✅ 0) ::attrs 먼저 처리 (메타 블록은 먼저 제거해야 함)
-      // while (rest.includes("::attrs")) {
-      //   const start = rest.indexOf("::attrs");
-      //   const { block, nextIndex } = extractBlock(rest, start);
+      while (rest.includes('::if')) {
+        const start = rest.indexOf('::if');
+        
+        const conditionMatch = rest.slice(start).match(/::if\s*\((.*?)\)/);
+        const condition = conditionMatch ? conditionMatch[1].trim() : "true";
 
-      //   // attrs 누적 (여러 ::attrs 지원 가능)
-      //   const parsed = parseAttrs(block);
-      //   result.attrs = { ...result.attrs, ...parsed };
+        const { block, nextIndex } = extractBlock(rest, start);
+        const dummyParsed = this.parse(`@if-container:div { ${block} }`);
 
-      //   // ::attrs 블록 제거
-      //   rest = rest.slice(0, start) + rest.slice(nextIndex);
-      // }
+        result.children.push({
+          type: "ifBlock",
+          condition: condition,
+          children: dummyParsed.children
+        });
+
+        rest = rest.slice(0, start) + rest.slice(nextIndex);
+      }
 
       // ✅ 1) children 태그들 파싱
       while (rest.includes('@')) {
@@ -67,31 +72,31 @@ export class NeoParser {
         rest = rest.slice(0, start) + rest.slice(nextIndex);
       }
 
-      // ✅ 3) ::if 조건 렌더링 파싱
-      while (rest.includes('::if')) {
-        const start = rest.indexOf('::if');
+      // // ✅ 3) ::if 조건 렌더링 파싱        // 순서 옮기기
+      // while (rest.includes('::if')) {
+      //   const start = rest.indexOf('::if');
         
-        // 1. 조건식 파싱
-        const conditionMatch = rest.slice(start).match(/::if\s*\((.*?)\)/);
-        const condition = conditionMatch ? conditionMatch[1].trim() : "true";
+      //   // 1. 조건식 파싱
+      //   const conditionMatch = rest.slice(start).match(/::if\s*\((.*?)\)/);
+      //   const condition = conditionMatch ? conditionMatch[1].trim() : "true";
 
-        // 2. 블록 파싱
-        // startIndex를 주면 알아서 가장 가까운 { } 블록을 찾아줌
-        const { block, nextIndex } = extractBlock(rest, start);
+      //   // 2. 블록 파싱
+      //   // startIndex를 주면 알아서 가장 가까운 { } 블록을 찾아줌
+      //   const { block, nextIndex } = extractBlock(rest, start);
 
-        // 3. 재귀 파싱
-        const dummyParsed = this.parse(`@if-container:div { ${block} }`);
+      //   // 3. 재귀 파싱
+      //   const dummyParsed = this.parse(`@if-container:div { ${block} }`);
 
-        // 4. 결과 저장
-        result.children.push({
-          type: "ifBlock",
-          condition: condition,
-          children: dummyParsed.children
-        });
+      //   // 4. 결과 저장
+      //   result.children.push({
+      //     type: "ifBlock",
+      //     condition: condition,
+      //     children: dummyParsed.children
+      //   });
 
-        // 5. 처리한 문자열 잘라내기 (무한 루프 방지)
-        rest = rest.slice(0, start) + rest.slice(nextIndex);
-      }
+      //   // 5. 처리한 문자열 잘라내기 (무한 루프 방지)
+      //   rest = rest.slice(0, start) + rest.slice(nextIndex);
+      // }
 
       // ✅ 4) 남은 것에서 innerHTML / on: 만 파싱
       const lines = rest.split('\n');

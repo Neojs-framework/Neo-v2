@@ -3,5 +3,7 @@ export const Store = {
 
   add() {
     Store.count++;
-  }
+  },
+
+  state: false
 };

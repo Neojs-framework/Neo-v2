@@ -1,5 +1,32 @@
 export class NeoCore {
   static create(data) {
+    
+    if (data.type === "ifBlock") {
+      let isTrue = false;
+      try {
+        // "$Store.state" -> "false" 로 변환
+        const conditionStr = NeoCore.renderTemplate(data.condition);
+        // "return false" 를 자바스크립트로 실행해서 진짜 false로 만듦
+        isTrue = new Function(`return ${conditionStr}`)();
+      } catch (e) {
+        console.warn("Neo if condition error:", e);
+      }
+
+      if (isTrue) {
+        // 참일 때: 껍데기(div) 없이 알맹이만 DocumentFragment로 묶어서 반환
+        const frag = document.createDocumentFragment();
+        if (Array.isArray(data.children)) {
+          data.children.forEach(child => {
+            frag.appendChild(NeoCore.create(child));
+          });
+        }
+        return frag;
+      } else {
+        // 거짓일 때: 화면에 아무것도 안 그리는 '빈 텍스트 노드' 반환 ⭐ (이게 핵심!)
+        return document.createTextNode('');
+      }
+    }
+
     const el = document.createElement(data.tag || 'div');
 
     if (data.id) el.id = data.id;

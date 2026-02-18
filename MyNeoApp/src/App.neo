@@ -30,7 +30,7 @@
         placeholder: $Store.count
       }
     }
-    ::if(true){
+    ::if($Store.state){
       @if_content:div[if_content]{
         innerHTML: "NeoNeo"
       }
