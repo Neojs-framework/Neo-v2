@@ -35,7 +35,7 @@ Neo v2는 **컴파일을 강제하지 않습니다.** `.neo` 파일은 런타임
 <head>
   <meta charset="UTF-8" />
   <title>Neo App</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
 </head>
 <body>
   <div id="app"></div>
@@ -61,9 +61,10 @@ Neo는 JavaScript 로직을 해석하거나 제한하지 않습니다.
 ```javascript
 export const Store = {
   count: 0,
+  state: false, // 조건부 렌더링을 위한 상태
   
   add() {
-    count++
+    this.count++;
   }
 };
 ```
@@ -73,7 +74,7 @@ export const Store = {
 import { Store } from './state.js';
 
 // Neo 런타임이 접근할 수 있도록 전역 바인딩
-window.Store = Store;
+window.Store = Store; 
 ```
 
 ---
@@ -84,23 +85,25 @@ Neo는 UI 선언만 담당합니다.
 
 #### `src/App.neo`
 ```neo
-@Btn:button [px-4, py-2, bg-black, text-white, rounded] {
-  innerHTML: "현재 숫자: $Store.count"
-  on:click: Store.add()
+@App:div [p-6] {
+  @Counter:p { innerHTML: "Count: $Store.count" }
+  
+  @Button:button [px-3, py-2, bg-blue-600, text-white, rounded] {
+    innerHTML: "Increase"
+    on:click: Store.add()
+  }
+
+  ::if($Store.state) {
+    @SecretMessage:div [mt-4, p-4, bg-yellow-100] {
+      innerHTML: "조건이 참일 때만 보이는 NeoNeo 메시지입니다! 🚀"
+    }
+  }
 }
 ```
 
 ---
 
 ## 📝 Syntax & Usage (Neo v2)
-
-### UI 구조 정의
-```neo
-@ID:Tag [Style] {
-  innerHTML: "text"
-  on:event: action()
-}
-```
 
 ### 주요 문법
 
@@ -111,6 +114,11 @@ Neo는 UI 선언만 담당합니다.
 | **`innerHTML`** | 텍스트/HTML 내용 및 상태 바인딩 | `"Hello $Store.user"` |
 | **`on:event`** | 이벤트 핸들러 바인딩 | `on:click: Store.add()` |
 | **`::attrs {...}`** | HTML 표준 속성 추가 | `::attrs { type: "text" }` |
+| **`::if(cond) {...}`** | **(v2.5.1)** 조건부 렌더링 지원 | `::if($Store.state) { ... }` |
+
+### 🆕 v2.5.1 신규 기능: 조건부 렌더링 (`::if`)
+- **강력한 평가**: `()` 안의 자바스크립트 식을 평가하여 참일 때만 렌더링합니다.
+- **순서 보장**: 코드에 선언된 순서 그대로 다른 요소들과 함께 배치됩니다.
 
 ---
 
@@ -124,21 +132,6 @@ Neo v2는 **의도적인 전체 재렌더 방식**을 사용합니다.
 
 ---
 
-## 🏗 Recommended Structure
-
-```text
-project-root/
-├── node_modules/
-├── src/
-│   ├── App.neo      # UI 선언 레이어
-│   ├── state.js     # 데이터 레이어
-│   └── actions.js   # 로직 레이어
-├── index.html       # 엔트리 포인트
-└── vite.config.js   # (선택 사항)
-```
-
----
-
 ## 🧠 Design Philosophy
 
 - **JavaScript를 대체하지 않습니다.** 로직은 JS 본연의 힘을 활용하세요.
@@ -146,7 +139,6 @@ project-root/
 - **UI 선언만 책임집니다.** 가장 간결한 방법으로 구조를 정의하세요.
 
 > **"JavaScript는 JavaScript답게, UI는 Neo로 선언하세요."**
-
 ---
 
 ## 📄 License
