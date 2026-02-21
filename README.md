@@ -27,32 +27,7 @@ npm install @junnyontop-pixel/neo-app@2.6.0
 
 Neo v2는 **컴파일을 강제하지 않습니다.** `.neo` 파일은 런타임에서 직접 로드·파싱·렌더링됩니다.
 
-### 1️⃣ index.html
-
-```html
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>Neo App</title>
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-</head>
-<body>
-  <div id="app"></div>
-
-  <script type="module">
-    import './src/state.js';
-    import './src/actions.js';
-  </script>
-
-  <script type="module" src="./compiler/main.js"></script>
-</body>
-</html>
-```
-
----
-
-### 2️⃣ 상태와 로직 (JavaScript)
+### 1️⃣ 상태와 로직 (JavaScript)
 
 Neo는 JavaScript 로직을 해석하거나 제한하지 않습니다.  
 **상태와 함수는 순수 JavaScript로 작성합니다.**
@@ -60,42 +35,51 @@ Neo는 JavaScript 로직을 해석하거나 제한하지 않습니다.
 #### `src/state.js`
 ```javascript
 export const Store = {
-  count: 0,
-  state: false, // 조건부 렌더링을 위한 상태
+  user: { name: "junnyontop-pixel" },
+  todoList: [
+    { text: "Neo v2.6.0 릴리즈", completed: true },
+    { text: "update!", completed: false }
+  ],
   
-  add() {
-    this.count++;
+  get remainingCount() {
+    return this.todoList.filter(t => !t.completed).length;
   }
 };
-```
 
-#### `src/actions.js`
-```javascript
-import { Store } from './state.js';
-
-// Neo 런타임이 접근할 수 있도록 전역 바인딩
-window.Store = Store; 
+window.Store = Store; // Neo 런타임 바인딩
 ```
 
 ---
 
-### 3️⃣ UI 선언 (.neo)
-
-Neo는 UI 선언만 담당합니다.
+### 2️⃣ UI 선언 (.neo)
 
 #### `src/App.neo`
 ```neo
-@App:div [p-6] {
-  @Counter:p { innerHTML: "Count: $Store.count" }
-  
-  @Button:button [px-3, py-2, bg-blue-600, text-white, rounded] {
-    innerHTML: "Increase"
-    on:click: Store.add()
+@App:div [p-6, bg-gray-50] {
+  @Header:h1 [text-2xl, font-bold, mb-4] {
+    innerHTML: "$Store.user.name 님의 오늘 할 일"
   }
 
-  ::if($Store.state) {
-    @SecretMessage:div [mt-4, p-4, bg-yellow-100] {
-      innerHTML: "조건이 참일 때만 보이는 NeoNeo 메시지입니다! 🚀"
+  @List:div [bg-white, shadow, rounded-lg] {
+    // 🆕 v2.6.0: 리스트 반복 렌더링
+    ::for(todo in Store.todoList) {
+      @Task:div [flex, items-center, p-4, border-b] {
+        @Checkbox:input {
+          ::attrs { type: "checkbox", checked: "$todo.completed" }
+          // 실시간 데이터 바인딩 (this.checked 활용)
+          on:change: todo.completed = this.checked
+        }
+        @Title:span [ml-3] { innerHTML: "$todo.text" }
+      }
+    }
+  }
+
+  @Footer:p [mt-4, text-sm, text-gray-400] {
+    ::if($Store.remainingCount > 0) {
+      innerHTML: "남은 할 일: $Store.remainingCount개"
+    }
+    ::if($Store.remainingCount === 0) {
+      innerHTML: "🎉 모든 할 일을 완료했습니다!"
     }
   }
 }
@@ -112,17 +96,15 @@ Neo는 UI 선언만 담당합니다.
 | **`@ID:Tag`** | 요소 ID와 HTML 태그 정의 | `@App:div` |
 | **`[...]`** | Tailwind 스타일 리스트 | `[p-4, bg-white]` |
 | **`innerHTML`** | 텍스트/HTML 내용 및 상태 바인딩 | `"Hello $Store.user"` |
-| **`on:event`** | 이벤트 핸들러 바인딩 | `on:click: Store.add()` |
-| **`::attrs {...}`** | HTML 표준 속성 추가 | `::attrs { type: "text" }` |
-| **`::if(cond) {...}`** | **(v2.5.1)** 조건부 렌더링 지원 | `::if($Store.state) { ... }` |
+| **`on:event`** | 이벤트 핸들러 바인딩 (`this` 지원) | `on:change: todo.completed = this.checked` |
+| **`::attrs {...}`** | HTML 표준 속성 및 Boolean 속성 지원 | `::attrs { checked: "$todo.completed" }` |
+| **`::if(cond) {...}`** | 조건부 렌더링 (v2.5.1+) | `::if($Store.state) { ... }` |
+| **`::for(item in list)`** | **(v2.6.0)** 리스트 반복 렌더링 | `::for(todo in Store.todoList) { ... }` |
 
-### 🆕 v2.5.1 신규 기능: 조건부 렌더링 (`::if`)
-- **강력한 평가**: `()` 안의 자바스크립트 식을 평가하여 참일 때만 렌더링합니다.
-
----
-
-### 예정 기능
-- **순서 보장**: 코드에 선언된 순서 그대로 다른 요소들과 함께 배치됩니다.
+### 🆕 v2.6.0 신규 기능: 반복 렌더링 (`::for`)
+- **지능형 스코프**: 루프 내부에서 `$item` 명칭으로 데이터에 직접 접근합니다.
+- **Context Injection**: 이벤트 발생 시 현재 아이템의 참조를 유지하여 실시간 데이터 수정을 보장합니다.
+- **순서 보장**: 선언된 위치 그대로 다른 요소들과 조화롭게 렌더링됩니다.
 
 ---
 
@@ -130,9 +112,9 @@ Neo는 UI 선언만 담당합니다.
 
 Neo v2는 **의도적인 전체 재렌더 방식**을 사용합니다.
 
-- **자동 반응형 ❌**: 복잡한 감시 로직을 제거하여 가볍습니다.
-- **명시적 렌더 ⭕**: 상태 변화 후 필요한 시점에 렌더링을 트리거합니다.
-- **예측 가능성**: 데이터 흐름이 명확하여 디버깅이 쉽습니다.
+- **자동 반응형 ❌**: 복잡한 감시 로직(Proxy 등)을 제거하여 극한의 가벼움을 유지합니다.
+- **명시적 렌더 ⭕**: `window.__neoRender()`를 호출하여 필요한 시점에 UI를 갱신합니다.
+- **예측 가능성**: 데이터 흐름이 단방향으로 명확하여 디버깅이 쉽습니다.
 
 ---
 
@@ -143,7 +125,6 @@ Neo v2는 **의도적인 전체 재렌더 방식**을 사용합니다.
 - **UI 선언만 책임집니다.** 가장 간결한 방법으로 구조를 정의하세요.
 
 > **"JavaScript는 JavaScript답게, UI는 Neo로 선언하세요."**
----
 
 ## 📄 License
 
