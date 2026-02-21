@@ -1,38 +1,36 @@
-@App:div [p-6, bg-gray-100] {
-
-  innerHTML: "Neo Nested Test"
-
-  @Header:div [mb-4, p-3, bg-white, rounded] {
-
-    @Title:h1 [text-2xl, font-bold] {
-      innerHTML: "Header Title"
-    }
-
-    @Sub:p [text-gray-500] {
-      innerHTML: "This is a nested paragraph"
-    }
+@TodoApp:div [p-6, bg-gray-50] {
+  @Header:h1 [text-2xl, font-bold, mb-4] {
+    innerHTML: "$Store.user.name 님의 오늘 할 일"
   }
-
-  @Content:div [p-4, bg-blue-50, rounded] {
-
-    @Counter:p [mb-2] {
-      innerHTML: "Count: $Store.count"
+  @ListContainer:div [bg-white, shadow, rounded-lg] {
+    ::attrs {
+      "data-version": "2.6.0"
     }
+    ::for(todo in Store.todoList) {
+      @Task:div [flex, items-center, p-4, border-b] {
+        @Checkbox:input {
+          ::attrs { 
+            type: "checkbox",
+            checked: "$todo.completed"
+          }
 
-    @Button:button [px-3, py-2, bg-blue-600, text-white, rounded] {
-      innerHTML: "Increase"
-      on:click: Store.add()
-    }
-
-    @input:input [hello] {
-      ::attrs: {
-        type: "text",
-        placeholder: $Store.count
+          on:change: todo.completed = this.checked
+        }
+        @Title:span [ml-3, text-gray-700] {
+          innerHTML: "$todo.text"
+        }
       }
     }
-    ::if($Store.count > 14){
-      @if_content:div[if_content]{
-        innerHTML: "NeoNeo"
+  }
+  @Footer:p [mt-4, text-sm, text-gray-400] {
+    ::if($Store.remainingCount > 0) {
+      @Status:span {
+        innerHTML: "아직 $Store.remainingCount개의 할 일이 남았습니다."
+      }
+    }
+    ::if($Store.remainingCount === 0) {
+      @Status:span [text-green-500, font-bold] {
+        innerHTML: "🎉 모든 할 일을 끝냈습니다!"
       }
     }
   }

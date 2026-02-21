@@ -54,6 +54,29 @@ export class NeoParser {
         rest = rest.slice(0, start) + " ".repeat(nextIndex - start) + rest.slice(nextIndex);
       }
 
+      while (rest.includes('::for')) {
+        const start = rest.indexOf('::for');
+        
+        const forMatch = rest.slice(start).match(/::for\s*\((.*?)\s+in\s+(.*?)\)/);
+  
+        const itemName = forMatch ? forMatch[1].trim() : "item";   // "item" 추출
+        const listPath = forMatch ? forMatch[2].trim() : "[]";     // "Store.items" 추출
+
+        const { block, nextIndex } = extractBlock(rest, start);
+        const dummyParsed = this.parse(`@for-container:div { ${block} }`);
+
+        result.children.push({
+          type: "forBlock",
+          itemName: itemName,
+          listPath: listPath,
+          children: dummyParsed.children,
+          _pos: start
+        });
+
+        // rest = rest.slice(0, start) + rest.slice(nextIndex);
+        rest = rest.slice(0, start) + " ".repeat(nextIndex - start) + rest.slice(nextIndex);
+      }
+
       // ✅ 1) children 태그들 파싱
       while (rest.includes('@')) {
         const start = rest.indexOf('@');
