@@ -1,4 +1,4 @@
-# 🚀 Neo Framework v2 (@junnyontop-pixel/neo-app)
+# 🚀 Neo Framework v2
 
 **Neo Framework v2**는  
 “더 간결하게, 더 직관적으로”,  
