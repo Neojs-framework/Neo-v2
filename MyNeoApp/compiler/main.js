@@ -1,5 +1,6 @@
 import { NeoParser } from './NeoParser.js';
 import { NeoCore } from '../core/NeoCore.js';
+import { Store } from '../src/store.js';
 
 let currentPath = 'App.neo';
 
